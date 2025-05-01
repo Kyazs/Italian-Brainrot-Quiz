@@ -148,12 +148,13 @@
   display: flex;
   justify-content: space-between;
   width: 100%;
+  gap: 8px;
 }
 
 .customContainer a {
   width: fit-content !important;
 }
-.customContainer MuiInputBase-input {
+.customContainer .MuiTextField-root{
   width: 100% !important;
 }
 

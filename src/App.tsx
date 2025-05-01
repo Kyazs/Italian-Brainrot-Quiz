@@ -4,6 +4,7 @@ import { Main, Footer } from "./components";
 import FadeIn from './components/FadeIn';
 import Quiz from './components/Quiz';
 import Results from './components/Results';
+import { trackVisit } from './utils/supabaseClient';
 import './index.scss';
 
 function App() {
@@ -18,6 +19,10 @@ function App() {
     }
 
     useEffect(() => {
+        // Track user visit when app loads
+        trackVisit();
+        
+        // Scroll to top
         window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
     }, []);
 
