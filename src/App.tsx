@@ -25,8 +25,9 @@ function App() {
         <Router>
             <div className={`main-container ${mode === 'dark' ? 'dark-mode' : 'light-mode'}`}>
                 <FadeIn transitionDuration={700}>
+                {/* <Main/> */}
                     <Routes>
-                        <Route path="/" element={<Main />} />
+                        <Route path="/italian-brainrot-quiz" element={<Main />} />
                         <Route path="/quiz" element={<Quiz />} />
                         <Route path="/results" element={<Results />} />
                     </Routes>

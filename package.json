@@ -1,8 +1,8 @@
 {
-  "name": "BrainRot-Quiz",
+  "name": "brainrot-quiz",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://kyazs.github.io/Kyazs-Portfolio/",
+  "homepage": "https://kyazs.github.io/italian-brainrot-quiz/",
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
     "@emotion/react": "^11.11.4",

@@ -3,17 +3,20 @@ import { useNavigate, useLocation } from "react-router-dom";
 import "../assets/styles/Quiz.scss";
 import { quizData, Question, QuizImage } from "../assets/datasets/data";
 
-// Define difficulty levels
-const difficultyLevels = {
-  easy: { name: "Easy", questionCount: 5 },
-  medium: { name: "Medium", questionCount: 10 },
-  hard: { name: "Hard", questionCount: 15 },
-};
 
 function Quiz() {
   const navigate = useNavigate();
   const location = useLocation();
   const difficulty = location.state?.difficulty || "medium";
+  const customDifficulty = location.state?.customDifficulty || "15";
+
+  // Define difficulty levels
+  const difficultyLevels = {
+    easy: { name: "Easy", questionCount: 5 },
+    medium: { name: "Medium", questionCount: 10 },
+    hard: { name: "Hard", questionCount: 15 },
+    custom: { name: "Custom", questionCount: parseInt(customDifficulty) || 15 }
+  };
 
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -34,8 +37,11 @@ function Quiz() {
       difficultyLevels[difficultyLevel as keyof typeof difficultyLevels]
         .questionCount;
 
+    // Make sure we don't try to generate more questions than we have available
+    const actualQuestionCount = Math.min(questionCount, quizData.length);
+
     // 2. Randomly select images for the quiz
-    const selectedIndices = getRandomIndices(quizData.length, questionCount);
+    const selectedIndices = getRandomIndices(quizData.length, actualQuestionCount);
     const selectedImages = selectedIndices.map((index) => quizData[index]);
 
     // 3. Generate questions with multiple choice options
@@ -124,6 +130,7 @@ function Quiz() {
           score: newScore, // Use the newly calculated score
           total: questions.length,
           difficulty,
+          customQuestionCount: difficulty === "custom" ? customDifficulty : null
         },
       });
     }
@@ -146,7 +153,9 @@ function Quiz() {
             Question {currentQuestionIndex + 1} of {questions.length}
           </h2>
           <div className="difficulty-badge">
-            {difficultyLevels[difficulty as keyof typeof difficultyLevels].name}
+            {difficulty === "custom" 
+              ? `Custom (${customDifficulty} Questions)`
+              : difficultyLevels[difficulty as keyof typeof difficultyLevels].name}
           </div>
         </div>
 
@@ -168,7 +177,7 @@ function Quiz() {
             )}
           </div>
 
-          <h3>What is this?</h3>
+          <h3>Who is this?</h3>
 
           <div className="options-container">
             {currentQuestion.options.map((option, index) => (

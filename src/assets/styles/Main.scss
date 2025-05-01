@@ -144,6 +144,25 @@
   background-color: #F44336;
 }
 
+.customContainer {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.customContainer a {
+  width: fit-content !important;
+}
+.customContainer MuiInputBase-input {
+  width: 100% !important;
+}
+
+.startBtn {
+  background-color: transparent !important;
+  border: 1px solid #5d00ff !important;
+  padding: 1.5em;
+}
+
 /* Modal styling */
 .quiz-info-modal {
   position: fixed;
@@ -180,7 +199,7 @@
     margin-bottom: 2rem;
     
     li {
-      color: #444;
+      color: #b9b9b9;
       margin-bottom: 0.8rem;
       font-size: 1rem;
       line-height: 1.4;
@@ -193,7 +212,7 @@
   font-size: 0.9rem;
   background-color: #f0f0f0;
   color: #333;
-  box-shadow: 0 3px 0 #ccc, 0 4px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 3px 0 #5d00ff, 0 4px 6px rgba(0,0,0,0.1);
 }
 
 /* Responsive styles */
