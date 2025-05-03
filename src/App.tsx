@@ -30,8 +30,10 @@ function App() {
         <Router>
             <div className={`main-container ${mode === 'dark' ? 'dark-mode' : 'light-mode'}`}>
                 <FadeIn transitionDuration={700}>
-                {/* <Main/> */}
                     <Routes>
+                        {/* Main component now renders at root path */}
+                        <Route path="/" element={<Main />} />
+                        {/* Keep the old route for compatibility with existing links */}
                         <Route path="/italian-brainrot-quiz" element={<Main />} />
                         <Route path="/quiz" element={<Quiz />} />
                         <Route path="/results" element={<Results />} />

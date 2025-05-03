@@ -23,6 +23,14 @@ function Quiz() {
   const [score, setScore] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [imageError, setImageError] = useState(false);
+  
+  // New states for animation
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [fadeOut, setFadeOut] = useState(false);
+  // Add a separate state to track when to disable hover effects
+  const [disableOptions, setDisableOptions] = useState(false);
 
   useEffect(() => {
     // Generate quiz questions when component mounts
@@ -112,28 +120,52 @@ function Quiz() {
   };
 
   const handleAnswerClick = (selectedAnswerIndex: number) => {
-    // Calculate new score
-    const newScore = selectedAnswerIndex === questions[currentQuestionIndex].correctAnswerIndex 
-      ? score + 1 
-      : score;
+    if (isAnimating) return; // Prevent multiple clicks during animation
     
-    // Check if this is the last question
-    if (currentQuestionIndex < questions.length - 1) {
-      // Not the last question, update score and move to next question
-      setScore(newScore);
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setImageError(false); // Reset image error for the next question
-    } else {
-      // This is the last question, navigate to results with updated score
-      navigate("/results", {
-        state: {
-          score: newScore, // Use the newly calculated score
-          total: questions.length,
-          difficulty,
-          customQuestionCount: difficulty === "custom" ? customDifficulty : null
-        },
-      });
-    }
+    // Set the selected answer and animation states
+    setSelectedAnswer(selectedAnswerIndex);
+    const correct = selectedAnswerIndex === questions[currentQuestionIndex].correctAnswerIndex;
+    setIsCorrect(correct);
+    setIsAnimating(true);
+    
+    // Calculate new score
+    const newScore = correct ? score + 1 : score;
+    
+    // Delay the transition to next question
+    setTimeout(() => {
+      // Only disable hover effects when starting the fade out animation
+      setDisableOptions(true);
+      // Start fade out animation
+      setFadeOut(true);
+      
+      // After fade out completes, move to next question or results
+      setTimeout(() => {
+        // Check if this is the last question
+        if (currentQuestionIndex < questions.length - 1) {
+          // Not the last question, update score and move to next question
+          setScore(newScore);
+          setCurrentQuestionIndex(currentQuestionIndex + 1);
+          setImageError(false); // Reset image error for the next question
+          
+          // Reset animation states
+          setSelectedAnswer(null);
+          setIsCorrect(null);
+          setIsAnimating(false);
+          setFadeOut(false);
+          setDisableOptions(false); // Re-enable hover effects
+        } else {
+          // This is the last question, navigate to results with updated score
+          navigate("/results", {
+            state: {
+              score: newScore, // Use the newly calculated score
+              total: questions.length,
+              difficulty,
+              customQuestionCount: difficulty === "custom" ? customDifficulty : null
+            },
+          });
+        }
+      }, 300); // Time for fade out animation
+    }, 2000); // 1 second delay before transitioning
   };
 
   if (isLoading) {
@@ -142,12 +174,9 @@ function Quiz() {
 
   const currentQuestion = questions[currentQuestionIndex];
 
-  // Simple, direct path to the images in the assets/datasets folder
-  const imagePath = `${process.env.PUBLIC_URL}/static/media/${currentQuestion.imageId}.png`;
-
   return (
     <div className="quiz-page-container">
-      <div className="quiz-content">
+      <div className={`quiz-content ${fadeOut ? 'fade-out' : ''}`}>
         <div className="quiz-header">
           <h2>
             Question {currentQuestionIndex + 1} of {questions.length}
@@ -183,8 +212,12 @@ function Quiz() {
             {currentQuestion.options.map((option, index) => (
               <button
                 key={index}
-                className="option-button"
+                className={`option-button ${selectedAnswer === index ? 
+                  (index === currentQuestion.correctAnswerIndex ? 'correct' : 'incorrect') : ''} 
+                  ${selectedAnswer !== null && index === currentQuestion.correctAnswerIndex ? 'show-correct' : ''}
+                  ${disableOptions && selectedAnswer !== index ? 'disabled' : ''}`}
                 onClick={() => handleAnswerClick(index)}
+                disabled={isAnimating}
               >
                 {String.fromCharCode(65 + index)}. {option}
               </button>

@@ -30,12 +30,14 @@ function Main() {
         <div className="chumbli-content">
           <div className="logo-container">
             <h1 className="quiz-logo">
-              Italian Brainrot Quiz
+                Italian Brainrot Quiz'
+              <div className="ascii-text">
               <ASCIIText
                 text="Have Fun!"
                 enableWaves={true}
                 asciiFontSize={2}
               />
+              </div>
             </h1>
           </div>
           <div className="button-container">
